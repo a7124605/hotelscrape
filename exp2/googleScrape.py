@@ -195,7 +195,7 @@ def main():
     # items = list(google_list.items())
     # item_key, item_value = items[7]  # ('飯店A', 'http://hotelA.com')
 
-    for hotel_name, link in itertools.islice(google_list.items(), 5):
+    for hotel_name, link in google_list.items():
         savedReviews = scrape_reviews(browser,link,hotel_name)
         export_review(savedReviews,filename)
 
