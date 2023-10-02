@@ -75,6 +75,8 @@ def main():
             row_dict = {'date': today_str, 'overall_rate': rate, 'hotel': hotel, 'source': 'Google'}
             writer.writerow(row_dict)
     
+    print("Expectation crawler finished")
+    
 
 if __name__ == '__main__':
     main()
