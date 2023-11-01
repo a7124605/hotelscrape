@@ -34,7 +34,7 @@ def create_csv():
 
     filename = os.path.join(output_dir, f'{today_str}_google_reviews.csv')
     # 指定字段名
-    fieldnames = ['review_date', 'review_text', 'review_rate', 'review_hotel', 'review_source']
+    fieldnames = ['review_date', 'review_text','amenities_score','service_score','location_score', 'overall_rate', 'review_hotel', 'review_source']
 
     # 如果文件不存在，则创建文件并写入标题行
     if not os.path.exists(filename):
@@ -100,8 +100,11 @@ def scrape_reviews(browser,url,hotelname):
         review_dict = {
             'review_date': None,
             'review_text': None,
-            'review_rate': None,
-            'review_hotel': hotelname,
+            'amenities_score': None,
+            'service_score': None,
+            'location_score': None,
+            'overall_rate':None,
+            'review_hotel': hotelname,  # 假設 hotelname 是一個變數
             'review_source':'Google'
         }
         try:           
@@ -116,8 +119,20 @@ def scrape_reviews(browser,url,hotelname):
             review_text = comment_block.find_element(By.XPATH, './/div[@class="STQFb eoY5cb"]//div[@class="K7oBsc"]/div/span').text
             review_dict['review_text'] = review_text
 
-            review_rate = comment_block.find_element(By.CLASS_NAME, 'GDWaad').text
-            review_dict['review_rate'] = review_rate # 5/5 -> 5
+            score_elements = comment_block.find_elements(By.CLASS_NAME, 'dA5Vzb')
+            for element in score_elements:
+                category = element.find_element(By.CLASS_NAME, 'uTU5Ac').text  # 分類名稱，例如 "客房"
+                scores = element.find_elements(By.TAG_NAME, "span")  # 分數
+                if category == '客房':
+                    review_dict['amenities_score'] = scores[1].text
+                elif category == '服務':
+                    review_dict['service_score'] = scores[1].text
+                elif category == '位置':
+                    review_dict['location_score'] = scores[1].text
+
+
+            overall_rate = comment_block.find_element(By.CLASS_NAME, 'GDWaad').text
+            review_dict['overall_rate'] = overall_rate # 5/5 -> 5
 
         except NoSuchElementException:
             invalidCount += 1
@@ -178,14 +193,15 @@ def export_review(review_dicts,exportpath):
     for review_dict in review_dicts: #預處理評論
         review_dict['review_text'] = extract_chinese_review(review_dict['review_text'])
         review_dict['review_date'] = clean_date_string(review_dict['review_date'])
-        review_dict['review_rate'] = review_dict['review_rate'].split("/")[0]
+        review_dict['overall_rate'] = review_dict['overall_rate'].split("/")[0]
     #將評論新增到當天的csv中
     with open(exportpath, mode='a', encoding='utf-8', newline='') as file:
-        fieldnames = ['review_date', 'review_text', 'review_rate', 'review_hotel', 'review_source']
+        fieldnames = ['review_date', 'review_text','amenities_score','service_score','location_score','overall_rate', 'review_hotel', 'review_source']
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         for review_dict in review_dicts:
             writer.writerow(review_dict)
 
+# fieldnames = ['review_date', 'review_text','amenities_score','service_score','location_score', 'overall_rate', 'review_hotel', 'review_source']
 
 def main():
     
