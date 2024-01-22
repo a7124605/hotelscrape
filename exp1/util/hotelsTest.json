@@ -2,7 +2,7 @@
   {
       "hotel_name": "老爺大酒店",
       "urls": {
-          "google": "https://www.google.com/travel/hotels/entity/ChkI5p3b4rer9P2OARoML2cvMTJobXgyeDR2EAE/reviews?q=%E8%80%81%E7%88%BA%E5%A4%A7%E9%85%92%E5%BA%97&ts=CAESABogCgIaABIaEhQKBwjoDxADGAwSBwjoDxADGA4YAjICCAIqCQoFOgNUV0QaAA&ictx=3&hl=zh-Hant-TW&gl=tw&g2lb=2502548%2C2503771%2C2503781%2C4258168%2C4270442%2C4284970%2C4291517%2C4308226%2C4429192%2C4597339%2C4757164%2C4814050%2C4850738%2C4864715%2C4874190%2C4886480%2C4893075%2C4924070%2C4965990%2C4990494%2C72248281%2C72264422%2C72281254%2C72286089%2C72296743&ap=MAA&qs=CAAgASgASAA&utm_campaign=sharing&utm_medium=link&utm_source=htls",
+          "google": "None",
           "agoda": "https://www.agoda.com/hotel-royal-nikko-taipei/reviews/taipei-tw.html?cid=1844104",
           "bkcom": "https://www.booking.com/hotel/tw/royal-taipei.zh-tw.html"
       }

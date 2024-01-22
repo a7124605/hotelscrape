@@ -5,6 +5,8 @@ from selenium.common.exceptions import (
     WebDriverException, TimeoutException, NoSuchElementException)
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def initialize_browser(url):
@@ -18,22 +20,30 @@ def initialize_browser(url):
         raise
 
 
+# //*[@id="reviews-language-filter_list"]/ul/li[4]
+
+
 def switch_chinese(browser):
-    # browser.execute_script("window.scrollBy(0, 500)")
-    languageMenu = browser.find_element(
-        By.XPATH, '//*[@id="reviewFilterSection"]/div[1]/div[3]')
-    languageMenu.click()
-    time.sleep(1)
-    zhtw = browser.find_element(
-        By.XPATH, '//*[@id="reviews-language-filter_list"]/ul/li[4]')
-    zhtw.click()
-    time.sleep(1)
+
+    try:
+        wait = WebDriverWait(browser, 10)
+        language_dropdown = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '//*[@id="reviewFilterSection"]/div[1]/div[3]')))
+
+    # 點擊下拉選單
+        language_dropdown.click()
+        traditional_chinese_option = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, "//li[contains(., '繁體中文 (台灣)')]")))
+        traditional_chinese_option.click()
+    except Exception as e:
+        print("無法選擇繁體中文 (台灣):", e)
+        return
 
 
 def click_readmore(browser):
     try:
         read_more_button = browser.find_element(
-            By.XPATH, '//*[@id="reviewSection"]/div[5]/button')
+            By.XPATH, '//*[@id="reviewSection"]/div[6]/button')
         read_more_button.click()
         time.sleep(1)
         return True

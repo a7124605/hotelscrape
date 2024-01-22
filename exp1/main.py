@@ -9,7 +9,7 @@ from model.bkcomReviewModel import export_reviews as bkcomExports
 
 
 def main():
-    with open('./util/hotelsTest.json', 'r') as file:
+    with open('./util/hotels.json', 'r', encoding='utf-8') as file:
         hotels_list = json.load(file)
 
     for hotel in hotels_list:
@@ -19,22 +19,24 @@ def main():
         bkcom_url = hotel['urls']['bkcom']
 
         # # google Scrape
-        # exportpath_google = create_csv(hotel_name, "google")
-        # # "1 年前"
-        # google_reviews = googleScrape(google_url, hotel_name, "1 年前")
-        # googleExports(google_reviews, exportpath_google)
-        # print(f'{hotel_name}"s google review has already scraped')
+        # if google_url and google_url != "None":
+        #     exportpath_google = create_csv(hotel_name, "google")
+        #     google_reviews = googleScrape(google_url, hotel_name, "1 年前")
+        #     googleExports(google_reviews, exportpath_google)
+        #     print(f'{hotel_name}"s google review has already scraped')
 
-        # agoda Scrape
-        exportpath_agoda = create_csv(hotel_name, "agoda")
-        agoda_reviews = agodaScrape(agoda_url, hotel_name)
-        agodaExports(agoda_reviews, exportpath_agoda)
-        print(f'{hotel_name}"s agoda review has already scraped')
+        # Agoda Scrape
+        if agoda_url and agoda_url != "None":
+            exportpath_agoda = create_csv(hotel_name, "agoda")
+            agoda_reviews = agodaScrape(agoda_url, hotel_name)
+            agodaExports(agoda_reviews, exportpath_agoda)
+            print(f'{hotel_name}"s agoda review has already scraped')
 
-        # # bookingcom Scrape
-        # exportpath_bkcom = create_csv(hotel_name, "bkcom")
-        # bkcom_reviews = bkcomScrape(bkcom_url, hotel_name)
-        # bkcomExports(bkcom_reviews, exportpath_bkcom)
+        # # Booking.com Scrape
+        # if bkcom_url and bkcom_url != "None":
+        #     exportpath_bkcom = create_csv(hotel_name, "bkcom")
+        #     bkcom_reviews = bkcomScrape(bkcom_url, hotel_name)
+        #     bkcomExports(bkcom_reviews, exportpath_bkcom)
 
 
 main()

@@ -3,6 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
     WebDriverException, TimeoutException, NoSuchElementException)
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def initialize_browser(url: str):
@@ -22,28 +24,32 @@ def scroll_and_click_read_more(browser, end_time: str):
 
 
 def switch_latest_sort(browser):
-    browser.execute_script("window.scrollBy(0, 500)")
-    sortedstroll = browser.find_element(
-        By.XPATH, '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[3]/div/div[3]/span[1]/span/div/div[1]/div[1]/div[1]')
-    sortedstroll.click()
-    time.sleep(1)
+    wait = WebDriverWait(browser, 10)
 
-    # switch review sort to latest
-    Latest = browser.find_element(
-        By.XPATH, '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[3]/div/div[3]/span[1]/span/div[1]/div[2]/div[2]')
-    Latest.click()
-    time.sleep(3)
+    # Click the dropdown to open sorting options
+    # Replace with the actual XPath of the dropdown
+    dropdown_xpath = '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[2]/div/div[3]/span/span/div/div[1]/div[1]/div[1]'
+    dropdown = wait.until(
+        EC.element_to_be_clickable((By.XPATH, dropdown_xpath)))
+    dropdown.click()
+
+    # Click the 'Latest Reviews' option
+    # Replace with the XPath of 'Latest Reviews' option
+    latest_reviews_xpath = '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[2]/div/div[3]/span/span/div[1]/div[2]/div[2]'
+    latest_reviews_option = wait.until(
+        EC.element_to_be_clickable((By.XPATH, latest_reviews_xpath)))
+    latest_reviews_option.click()
 
 
 def click_readmore(browser):
-    # 將網頁上的"閱讀完整內容"點開
     item = browser.find_elements(
-        By.XPATH, '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[4]')  # 用來定位Read more按鈕
+        By.XPATH, '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[4]')
     for i in item:
-        buttons = i.find_elements(
-            By.CSS_SELECTOR, 'span[jsname="kDNJsb"]')  # 找出所有的閱讀完整內容
+        buttons = i.find_elements(By.CSS_SELECTOR, 'span[jsname="kDNJsb"]')
         for button in buttons:
-            if button.text == "閱讀完整內容" or button.text == "閱讀更多":
+            if button.text in ["閱讀完整內容", "閱讀更多"]:
+                wait = WebDriverWait(browser, 10)
+                wait.until(EC.element_to_be_clickable(button))
                 browser.execute_script("arguments[0].click();", button)
 
 
