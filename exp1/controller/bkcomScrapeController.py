@@ -84,12 +84,13 @@ def extract_reviews(browser, hotel_name):
 
         for comment in comments:
             try:
+
                 review_date = comment.find_element(
                     By.XPATH, '//*[@id="review_list_page_container"]/ul/li[4]/div/div[2]/div[2]/div[1]/span').text
                 review_date = parse_review_date(review_date)
 
                 # 超過1年的評論會終止迴圈
-                if review_date < datetime.datetime.now() - relativedelta(years=1):
+                if review_date != None and review_date < datetime.datetime.now() - relativedelta(years=1):
                     should_continue = False
                     break
 
@@ -99,7 +100,7 @@ def extract_reviews(browser, hotel_name):
                     [content.text for content in review_contents])
 
                 review_dict = {
-                    'review_date': review_date.strftime("%Y-%m-%d"),
+                    'review_date': review_date.strftime("%Y-%m-%d") if review_date is not None else 'None',
                     'review_text': review_text,
                     'review_rate': 10,
                     'review_hotel': hotel_name,
