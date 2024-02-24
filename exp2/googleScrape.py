@@ -8,9 +8,10 @@ from datetime import datetime, timedelta
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import (
     WebDriverException, TimeoutException, NoSuchElementException)
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from hotels import google_list
 
 
@@ -54,17 +55,33 @@ def scrape_reviews(browser, url, hotelname):
     saved_reviews = []
 
     def switch_latest_sort():
-        browser.execute_script("window.scrollBy(0, 500)")
-        sortedstroll = browser.find_element(
-            By.XPATH, '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[3]/div/div[3]/span[1]/span/div/div[1]/div[1]/div[1]')
-        sortedstroll.click()
-        time.sleep(1)
+        # 定義XPath路徑
+        layouts = [
+            '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[3]/div/div[3]/span[1]/span/div/div[1]/div[1]/div[1]',
+            '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[2]/div/div[3]/span/span/div/div[1]/div[1]/div[1]'
+        ]
+        latest_review_options = [
+            '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[3]/div/div[3]/span[1]/span/div[1]/div[2]/div[2]',
+            '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[2]/div/div[3]/span/span/div[1]/div[2]/div[2]'
+        ]
+        wait = WebDriverWait(browser, 10)
 
-        # switch review sort to latest
-        Latest = browser.find_element(
-            By.XPATH, '//*[@id="reviews"]/c-wiz/c-wiz/div/div/div/div/div[3]/div/div[3]/span[1]/span/div[1]/div[2]/div[2]')
-        Latest.click()
-        time.sleep(3)
+        for layout, latest_option in zip(layouts, latest_review_options):
+            try:
+                # 等待下拉選單元素變為可見並點擊
+                dropdown = wait.until(
+                    EC.visibility_of_element_located((By.XPATH, layout)))
+                dropdown.click()
+
+                # 等待最新評論選項變為可見並點擊
+                latest = wait.until(EC.visibility_of_element_located(
+                    (By.XPATH, latest_option)))
+                latest.click()
+                print("Successfully switched to latest reviews.")
+                break  # 如果成功切換，跳出循環
+            except Exception as e:
+                print(f"Attempt to switch using layout failed: {e}")
+                continue  # 如果當前嘗試失敗，嘗試下一個布局
 
     def scroll_website():
 
@@ -87,7 +104,7 @@ def scrape_reviews(browser, url, hotelname):
             for comment_block in comment_blocks:
                 date = comment_block.find_element(
                     By.XPATH, './/span[contains(@class, "iUtr1") and contains(@class, "CQYfx")]').text
-                if "1 個月前" in date:
+                if "1 週前" in date:
                     should_continue = False
                     print("Finish Scroll")
                     break

@@ -21,7 +21,7 @@ def main():
         # google Scrape
         if google_url and google_url != "None":
             exportpath_google = create_csv(hotel_name, "google")
-            google_reviews = googleScrape(google_url, hotel_name, "1 年前")
+            google_reviews = googleScrape(google_url, hotel_name, "1 個月前")
             googleExports(google_reviews, exportpath_google)
             print(f'{hotel_name}"s google review has already scraped')
 
@@ -33,10 +33,10 @@ def main():
         #     print(f'{hotel_name}"s agoda review has already scraped')
 
         # Booking.com Scrape
-        if bkcom_url and bkcom_url != "None":
-            exportpath_bkcom = create_csv(hotel_name, "bkcom")
-            bkcom_reviews = bkcomScrape(bkcom_url, hotel_name)
-            bkcomExports(bkcom_reviews, exportpath_bkcom)
+        # if bkcom_url and bkcom_url != "None":
+        #     exportpath_bkcom = create_csv(hotel_name, "bkcom")
+        #     bkcom_reviews = bkcomScrape(bkcom_url, hotel_name)
+        #     bkcomExports(bkcom_reviews, exportpath_bkcom)
 
 
 main()
